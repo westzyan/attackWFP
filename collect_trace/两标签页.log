@@ -1,0 +1,42 @@
+2020-12-30 12:02:52,508 - DEBUG - POST http://127.0.0.1:37255/session {"capabilities": {"firstMatch": [{}], "alwaysMatch": {"browserName": "chrome", "platformName": "any", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}, "desiredCapabilities": {"browserName": "chrome", "version": "", "platform": "ANY", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}
+2020-12-30 12:02:52,510 - DEBUG - Starting new HTTP connection (1): 127.0.0.1:37255
+2020-12-30 12:02:52,975 - DEBUG - http://127.0.0.1:37255 "POST /session HTTP/1.1" 200 680
+2020-12-30 12:02:52,977 - DEBUG - Finished Request
+2020-12-30 12:02:52,977 - DEBUG - POST http://127.0.0.1:37255/session/f6f4295e7c0c712a334f95ff1b027d6a/timeouts {"pageLoad": 40000}
+2020-12-30 12:02:52,979 - DEBUG - http://127.0.0.1:37255 "POST /session/f6f4295e7c0c712a334f95ff1b027d6a/timeouts HTTP/1.1" 200 14
+2020-12-30 12:02:52,980 - DEBUG - Finished Request
+2020-12-30 12:02:52,981 - DEBUG - POST http://127.0.0.1:37255/session/f6f4295e7c0c712a334f95ff1b027d6a/timeouts {"script": 40000}
+2020-12-30 12:02:52,982 - DEBUG - http://127.0.0.1:37255 "POST /session/f6f4295e7c0c712a334f95ff1b027d6a/timeouts HTTP/1.1" 200 14
+2020-12-30 12:02:52,983 - DEBUG - Finished Request
+2020-12-30 12:02:53,992 - DEBUG - POST http://127.0.0.1:54487/session {"capabilities": {"firstMatch": [{}], "alwaysMatch": {"browserName": "chrome", "platformName": "any", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}, "desiredCapabilities": {"browserName": "chrome", "version": "", "platform": "ANY", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}
+2020-12-30 12:02:53,994 - DEBUG - Starting new HTTP connection (1): 127.0.0.1:54487
+2020-12-30 12:02:54,488 - DEBUG - http://127.0.0.1:54487 "POST /session HTTP/1.1" 200 680
+2020-12-30 12:02:54,489 - DEBUG - Finished Request
+2020-12-30 12:02:54,490 - DEBUG - POST http://127.0.0.1:54487/session/a22d71ff44a6214701227fa992d08625/timeouts {"pageLoad": 40000}
+2020-12-30 12:02:54,492 - DEBUG - http://127.0.0.1:54487 "POST /session/a22d71ff44a6214701227fa992d08625/timeouts HTTP/1.1" 200 14
+2020-12-30 12:02:54,493 - DEBUG - Finished Request
+2020-12-30 12:02:54,493 - DEBUG - POST http://127.0.0.1:54487/session/a22d71ff44a6214701227fa992d08625/timeouts {"script": 40000}
+2020-12-30 12:02:54,495 - DEBUG - http://127.0.0.1:54487 "POST /session/a22d71ff44a6214701227fa992d08625/timeouts HTTP/1.1" 200 14
+2020-12-30 12:02:54,496 - DEBUG - Finished Request
+2020-12-30 12:03:53,596 - DEBUG - POST http://127.0.0.1:55641/session {"capabilities": {"firstMatch": [{}], "alwaysMatch": {"browserName": "chrome", "platformName": "any", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}, "desiredCapabilities": {"browserName": "chrome", "version": "", "platform": "ANY", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}
+2020-12-30 12:03:53,598 - DEBUG - Starting new HTTP connection (1): 127.0.0.1:55641
+2020-12-30 12:03:54,076 - DEBUG - http://127.0.0.1:55641 "POST /session HTTP/1.1" 200 680
+2020-12-30 12:03:54,077 - DEBUG - Finished Request
+2020-12-30 12:03:54,077 - DEBUG - POST http://127.0.0.1:55641/session/3f962c15a0f1856f718000c7aa2f26ef/timeouts {"pageLoad": 40000}
+2020-12-30 12:03:54,078 - DEBUG - http://127.0.0.1:55641 "POST /session/3f962c15a0f1856f718000c7aa2f26ef/timeouts HTTP/1.1" 200 14
+2020-12-30 12:03:54,079 - DEBUG - Finished Request
+2020-12-30 12:03:54,079 - DEBUG - POST http://127.0.0.1:55641/session/3f962c15a0f1856f718000c7aa2f26ef/timeouts {"script": 40000}
+2020-12-30 12:03:54,080 - DEBUG - http://127.0.0.1:55641 "POST /session/3f962c15a0f1856f718000c7aa2f26ef/timeouts HTTP/1.1" 200 14
+2020-12-30 12:03:54,080 - DEBUG - Finished Request
+2020-12-30 12:03:55,088 - DEBUG - POST http://127.0.0.1:56499/session {"capabilities": {"firstMatch": [{}], "alwaysMatch": {"browserName": "chrome", "platformName": "any", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}, "desiredCapabilities": {"browserName": "chrome", "version": "", "platform": "ANY", "goog:chromeOptions": {"excludeSwitches": ["enable-automation"], "extensions": [], "args": ["--proxy-server=socks5://localhost:1080", "enable-automation", "--no-sandbox", "--disable-extensions", "--dns-prefetch-disable", "--disable-gpu", "service_args=[\u2019\u2013ignore-ssl-errors=true\u2019, \u2018\u2013ssl-protocol=TLSv1\u2019]"]}}}
+2020-12-30 12:03:55,090 - DEBUG - Starting new HTTP connection (1): 127.0.0.1:56499
+2020-12-30 12:03:55,592 - DEBUG - http://127.0.0.1:56499 "POST /session HTTP/1.1" 200 680
+2020-12-30 12:03:55,593 - DEBUG - Finished Request
+2020-12-30 12:03:55,594 - DEBUG - POST http://127.0.0.1:56499/session/7d641dc2aac33a8249b465fe40cb722d/timeouts {"pageLoad": 40000}
+2020-12-30 12:03:55,596 - DEBUG - http://127.0.0.1:56499 "POST /session/7d641dc2aac33a8249b465fe40cb722d/timeouts HTTP/1.1" 200 14
+2020-12-30 12:03:55,597 - DEBUG - Finished Request
+2020-12-30 12:03:55,598 - DEBUG - POST http://127.0.0.1:56499/session/7d641dc2aac33a8249b465fe40cb722d/timeouts {"script": 40000}
+2020-12-30 12:03:55,599 - DEBUG - http://127.0.0.1:56499 "POST /session/7d641dc2aac33a8249b465fe40cb722d/timeouts HTTP/1.1" 200 14
+2020-12-30 12:03:55,600 - DEBUG - Finished Request
+2020-12-30 12:03:55,610 - INFO - 开始第0轮次捕获
+2020-12-30 12:03:55,610 - INFO - 开始:adobe.com_adobe.com
