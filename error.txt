@@ -1,0 +1,4 @@
+0,adobe.com_adobe.com
+0,adobe.com_amazon.com
+0,adobe.com_americanexpress.com
+0,adobe.com_americanexpress.com
