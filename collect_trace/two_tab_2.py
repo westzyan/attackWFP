@@ -8,7 +8,6 @@ import mkdir_util
 import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 # logging.basicConfig(filename='两标签页.log', level=logging.DEBUG, format=LOG_FORMAT)
@@ -41,7 +40,7 @@ path = cf.get("collect", "origin_path")
 start = int(cf.get("collect", "round_start"))
 end = int(cf.get("collect", "round_end"))
 eth0 = cf.get("collect", "eth0")
-
+interval_time = int(cf.get("collect", "interval_time"))
 
 
 def browser_tab(url, flag):
@@ -53,10 +52,13 @@ def browser_tab(url, flag):
         with open("../split_time.txt", "a") as f:
             f.write(str(time.time()) + "\n")
         f.close()
-    browser.get("https://www." + url)
-    browser.close()
+    try:
+        browser.get("https://www." + url)
+    except Exception as e:
+        print(str(e))
+    finally:
+        browser.close()
     return 0
-
 
 
 if __name__ == '__main__':
@@ -76,24 +78,29 @@ if __name__ == '__main__':
         for url_index in range(len(url_list)):
             for next_tab_index in range(10):
                 try:
-                    logging.info("开始:%s_%s", url_list[url_index], url_list[url_index + next_tab_index % 100])
-                    cmd1 = "tcpdump -i {} -w {}{}/{}_{}.pcap &".format(eth0, path, index, url_list[url_index].split("/")[-1], url_list[url_index + next_tab_index % 100].split("/")[-1])
+                    logging.info("开始:%s_%s", url_list[url_index], url_list[(url_index + next_tab_index) % 100])
+                    cmd1 = "tcpdump -i {} -w {}{}/{}_{}.pcap &".format(eth0, path, index,
+                                                                       url_list[url_index].split("/")[-1],
+                                                                       url_list[url_index + next_tab_index % 100].split(
+                                                                           "/")[-1])
                     cmd2 = "ps -ef | grep 'tcpdump' | grep -v grep | awk '{print $2}' | xargs kill -9"
                     os.system(cmd1)
                     futures = []
                     futures.append(executor.submit(browser_tab, url_list[url_index], False))
-                    time.sleep(2)
-                    futures.append(executor.submit(browser_tab, url_list[url_index + next_tab_index % 100], True))
+                    time.sleep(interval_time)
+                    futures.append(executor.submit(browser_tab, url_list[(url_index + next_tab_index) % 100], True))
                     for result in as_completed(futures):
                         data = result.result()
                     os.system(cmd2)
-                    logging.info("结束:%s_%s", url_list[url_index], url_list[url_index + next_tab_index % 100])
+                    logging.info("结束:%s_%s", url_list[url_index], url_list[(url_index + next_tab_index) % 100])
                     time.sleep(2)
                 except Exception as e:
-                    print(url_list[url_index], url_list[url_index + next_tab_index % 100], "error", str(e))
-                    logging.error("round:%s, error:%s_%s,%s", index, url_list[url_index], url_list[url_index + next_tab_index % 100], str(e))
+                    print(url_list[url_index], url_list[(url_index + next_tab_index) % 100], "error", str(e))
+                    logging.error("round:%s, error:%s_%s,%s", index, url_list[url_index],
+                                  url_list[(url_index + next_tab_index) % 100], str(e))
                     with open("../error.txt", "a") as f2:
-                        f2.write(str(index) + "," + url_list[url_index] + "_" + url_list[url_index + next_tab_index % 100] + "\n")
+                        f2.write(str(index) + "," + url_list[url_index] + "_" + url_list[
+                            (url_index + next_tab_index) % 100] + "\n")
                     f2.close()
                 time.sleep(2)
         time.sleep(2)
