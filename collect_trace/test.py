@@ -37,5 +37,7 @@ def test():
 
 if __name__ == '__main__':
     print(time.time())
-    test()
+    with open("../split_time.txt", "a") as f:
+        f.write(str(time.time()) + "\n")
+    f.close()
     print(time.time())
