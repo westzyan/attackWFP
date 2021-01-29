@@ -1,4 +1,3 @@
-import os
 import configparser
 import os
 import logging
@@ -22,7 +21,9 @@ remote_port = cf.get("trace_parse", "remote_port")
 save_filepath = cf.get("trace_parse", "save_filepath")
 save_ttdl_filepath = cf.get("trace_parse", "save_ttdl_filepath")
 origin_filepath = cf.get("trace_parse", "origin_filepath")
-web_num_dict = {'adobe.com_amazon.com': '0', 'amazon.com_americanexpress.com': '1',
+df_filepath = cf.get("trace_parse", "save_df_filepath")
+
+web_num_dict1 = {'adobe.com_amazon.com': '0', 'amazon.com_americanexpress.com': '1',
                 'americanexpress.com_apple.com': '2',
                 'apple.com_archive.org': '3', 'archive.org_bbc.com': '4', 'bbc.com_bet9ja.com': '5',
                 'bet9ja.com_bing.com': '6',
@@ -117,7 +118,16 @@ web_num_dict = {'adobe.com_amazon.com': '0', 'amazon.com_americanexpress.com': '
                 'wordpress.com_wordpress.com': '196',
                 'yahoo.com_yahoo.com': '197', 'youtube.com_youtube.com': '198', 'zillow.com_zillow.com': '199'}
 
+web_num_dict = {'adobe.com': '0', 'amazon.com': '1', 'americanexpress.com': '2', 'apple.com': '3', 'archive.org': '4', 'bbc.com': '5', 'bet9ja.com': '6', 'bing.com': '7', 'booking.com': '8', 'breitbart.com': '9', 'canva.com': '10', 'chaturbate.com': '11', 'chess.com': '12', 'cnet.com': '13', 'cnn.com': '14', 'coinmarketcap.com': '15', 'craigslist.org': '16', 'dailymotion.com': '17', 'dell.com': '18', 'detik.com': '19', 'digikala.com': '20', 'discord.com': '21', 'disneyplus.com': '22', 'dropbox.com': '23', 'duckduckgo.com': '24', 'ebay.com': '25', 'elintransigente.com': '26', 'espn.com': '27', 'etsy.com': '28', 'ettoday.net': '29', 'fandom.com': '30', 'flipkart.com': '31', 'foxnews.com': '32', 'gamepedia.com': '33', 'github.com': '34', 'globo.com': '35', 'godaddy.com': '36', 'google.com': '37', 'grammarly.com': '38', 'hdfcbank.com': '39', 'healthline.com': '40', 'hulu.com': '41', 'ilovepdf.com': '42', 'imdb.com': '43', 'imgur.com': '44', 'indeed.com': '45', 'instagram.com': '46', 'linkedin.com': '47', 'mediafire.com': '48', 'mercari.com': '49', 'microsoft.com': '50', 'msn.com': '51', 'naver.com': '52', 'netflix.com': '53', 'newegg.com': '54', 'nytimes.com': '55', 'office.com': '56', 'okezone.com': '57', 'onlinesbi.com': '58', 'paypal.com': '59', 'pinterest.com': '60', 'pixnet.net': '61', 'primevideo.com': '62', 'reddit.com': '63', 'researchgate.net': '64', 'roblox.com': '65', 'savefrom.net': '66', 'setn.com': '67', 'sindonews.com': '68', 'slack.com': '69', 'slideshare.net': '70', 'soundcloud.com': '71', 'speedtest.net': '72', 'spotify.com': '73', 'stackexchange.com': '74', 'target.com': '75', 'telegram.org': '76', 'theguardian.com': '77', 'thestartmagazine.com': '78', 'tokopedia.com': '79', 'tradingview.com': '80', 'trendyol.com': '81', 'tribunnews.com': '82', 'tumblr.com': '83', 'twitter.com': '84', 'ups.com': '85', 'varzesh3.com': '86', 'vk.com': '87', 'w3schools.com': '88', 'washingtonpost.com': '89', 'wayfair.com': '90', 'wellsfargo.com': '91', 'wetransfer.com': '92', 'whatsapp.com': '93', 'wikihow.com': '94', 'wikipedia.org': '95', 'wordpress.com': '96', 'yahoo.com': '97', 'youtube.com': '98', 'zillow.com': '99'}
+
+
 local_ip_start = ["10.", "192."]
+
+
+def is_empty_file(file_path: str):
+    assert isinstance(file_path, str), f"file_path参数类型不是字符串类型: {type(file_path)}"
+    assert os.path.isfile(file_path), f"file_path不是一个文件: {file_path}"
+    return os.path.getsize(file_path) == 0
 
 
 def read_trace_locations():
@@ -310,7 +320,7 @@ def extract_trace_files(dir):
     :param files:
     :return:
     '''
-    remote_port_list = ["60857", "60858"]
+    remote_port_list = ["60858"]
     input_filepath = save_filepath
     output_filepath = save_ttdl_filepath
     files = os.listdir(input_filepath + "/" + dir)
@@ -338,7 +348,8 @@ def extract_trace_files(dir):
                 for row in new_rows:
                     f.write(row + "\n")
             f.close()
-
+            if is_empty_file(full_save_file) is True:
+                logger.error("文件为空:%s", full_save_file)
             logger.info("写入文件完毕:%s", full_save_file)
         except Exception as e:
             logger.error("文件失败：%s", file)
@@ -351,7 +362,7 @@ def extract_trace():
     '''
     for i in range(100):
         mkdir(save_ttdl_filepath + str(i))
-    executor = ProcessPoolExecutor(max_workers=30)
+    executor = ProcessPoolExecutor(max_workers=10)
     dirs = os.listdir(save_filepath)
     logger.info("dirs: %s", dirs)
     for dir in dirs:
@@ -438,7 +449,7 @@ def extract_feature():
     print(len(last_list))
     executor.shutdown()
     data = pd.DataFrame(data=last_list)
-    data.to_csv("/media/zyan/文档/毕业设计/code/attack_dataset/round2/df_tcp_10000.csv", index=False, header=False)
+    data.to_csv(df_filepath, index=False, header=False)
 
 
 def extract_feature_open_world(filepath):
@@ -521,11 +532,11 @@ def extract_trace_files_test(dir):
 
 if __name__ == '__main__':
     # print(time.time())
-    parse_trace_mul_thread()
+    # parse_trace_mul_thread()
     # print(time.time())
-    # extract_trace()
-    # time.sleep(5)
-    # extract_feature()
+    extract_trace()
+    time.sleep(5)
+    extract_feature()
 
     # parse_trace_open_world('/media/zyan/文档/毕业设计/code/第10轮收集/new_open_world_2/round1')
     # input = '/media/zyan/文档/毕业设计/code/dataset/round10/tcp/'
