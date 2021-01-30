@@ -1,32 +1,60 @@
-import os
-import Levenshtein.StringMatcher as niubi
 import numpy as np
-import random
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from multiprocessing import Pool
+from collect_trace.mkdir_util import mkdir
 import matplotlib.pyplot as plt
 import matplotlib
+import random
 
-
-def merge_single(file1, file2, gap_second):
+def merge_single(file1, file2, label, instance, gap_second, outpath):
     f1 = np.loadtxt(file1)
     tab1 = [1] * len(f1)
     f1 = np.column_stack((f1, tab1))
     f2 = np.loadtxt(file2)
     tab2 = [2] * len(f2)
     f2 = np.column_stack((f2, tab2))
-    # print(f2)
     for i in range(len(f2)):
         f2[i][0] = f2[i][0] + gap_second
-    # print(f2)
     data = np.concatenate((f1, f2), axis=0)
-    print(data)
     data = data[np.argsort(data[:, 0])]
-    print(data)
+    out_file = "{}{}/{}".format(outpath, label, instance)
+    print(out_file)
+    np.savetxt(out_file, data, fmt="%f,%d,%d", delimiter=",")
 
 
-def merge_AWF(file1, file2):
-    print()
+
+def merge_AWF_next(gap_second, outpath):
+    filepath = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/tcp_time_direction_len/"
+    for i in range(95):
+        mkdir("{}{}".format(outpath, i))
+    executor = ProcessPoolExecutor(max_workers=30)
+    for i in range(95):
+        for j in range(1000):
+            file1 = filepath + str(i) + "/" + str(j)
+            file2 = filepath + str((i + 1) % 95) + "/" + str(j)
+            executor.submit(merge_single, file1, file2, i, j, gap_second, outpath)
+    executor.shutdown()
+
+def merge():
+    for i in range(3, 11):
+        outpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/random/round{}/tcp_time_direction_len/".format(i - 1)
+        merge_AWF_random(i, outpath)
+
+
+def merge_AWF_random(gap_second, outpath):
+    filepath = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/tcp_time_direction_len/"
+    for i in range(95):
+        mkdir("{}{}".format(outpath, i))
+    executor = ProcessPoolExecutor(max_workers=20)
+    for i in range(95):
+        for j in range(100):
+            random_num1 = random.randint(0, 1000)
+            random_num2 = random.randint(0, 95)
+            random_num3 = random.randint(0, 1000)
+            file1 = filepath + str(i) + "/" + str(random_num1)
+            file2 = filepath + str(random_num2) + "/" + str(random_num3)
+            executor.submit(merge_single, file1, file2, i, j, gap_second, outpath)
+    executor.shutdown()
+
 
 
 def merge_MY():
@@ -192,4 +220,9 @@ if __name__ == '__main__':
     # # print(plt.style.available)
     file1 = "/media/zyan/文档/毕业设计/code/参考代码/undef_data/0-0"
     file2 = "/media/zyan/文档/毕业设计/code/参考代码/undef_data/1-1"
-    merge_single(file1, file2, 0)
+    outpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/random/round1/tcp_time_direction_len/"
+    # merge_single(file1, file2, 0, 1, 2, outpath)
+
+    # merge_AWF_next(2, outpath)
+    merge()
+    # merge_AWF_random(2, outpath)

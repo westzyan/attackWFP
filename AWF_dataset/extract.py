@@ -3,6 +3,7 @@ import os
 import logging
 import csv
 import pandas as pd
+import numpy as np
 import random
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -38,18 +39,18 @@ def extract_file_1000(filepath, outpath):
             os.system(cmd)
 
 
-def extract_feature_single_dir_simulator(dir):
+def extract_feature_single_dir_simulator(dir, length):
     last_list = []
     input_filepath = save_ttdl_filepath
     files = os.listdir(input_filepath + "/" + dir)
     for file in files:
         # try:
-        last_single_list = [0] * 5000
+        last_single_list = [0] * length
         origin_single_list = []
         full_file = input_filepath + dir + "/" + file
         # logger.info("开始读取文件:%s", full_file)
         with open(full_file, 'r') as f:
-            reader = csv.reader(f, delimiter='\t')
+            reader = csv.reader(f, delimiter=',')
             rows = list(reader)
         f.close()
         # random.shuffle(rows)
@@ -59,17 +60,17 @@ def extract_feature_single_dir_simulator(dir):
             else:
                 origin_single_list.append(-1)
         origin_length = 0
-        if len(origin_single_list) < 5000:
+        if len(origin_single_list) < length:
             origin_length = len(origin_single_list)
         else:
-            origin_length = 5000
-        # for i in range(origin_length):
-        #     last_single_list[i] = origin_single_list[i]
+            origin_length = length
+        for i in range(origin_length):
+            last_single_list[i] = origin_single_list[i]
 
-        count = 0
-        for i in range(5000 - origin_length, 5000):
-            last_single_list[i] = origin_single_list[count]
-            count = count + 1
+        # count = 0
+        # for i in range(5000 - origin_length, 5000):
+        #     last_single_list[i] = origin_single_list[count]
+        #     count = count + 1
 
 
         last_single_list.append(int(dir))
@@ -78,21 +79,65 @@ def extract_feature_single_dir_simulator(dir):
         # print(str(e))
         # logger.error("file %s error", input_filepath + dir + "/" + file)
     logger.info("file %s, len: %s", input_filepath + dir, len(last_list))
-    return last_list
+    return dir, last_list
+
+def extract_feature_single_dir_order(dir, length):
+    last_list = []
+    input_filepath = save_ttdl_filepath
+    files = os.listdir(input_filepath + "/" + dir)
+    for file in range(1000):
+        file = str(file)
+        # try:
+        last_single_list = [0] * length
+        origin_single_list = []
+        full_file = input_filepath + dir + "/" + file
+        # logger.info("开始读取文件:%s", full_file)
+        with open(full_file, 'r') as f:
+            reader = csv.reader(f, delimiter=',')
+            rows = list(reader)
+        f.close()
+        for row in rows:
+            if row[1][0] != "-":
+                origin_single_list.append(1)
+            else:
+                origin_single_list.append(-1)
+        origin_length = 0
+        if len(origin_single_list) < length:
+            origin_length = len(origin_single_list)
+        else:
+            origin_length = length
+        for i in range(origin_length):
+            last_single_list[i] = origin_single_list[i]
+        # count = 0
+        # for i in range(5000 - origin_length, 5000):
+        #     last_single_list[i] = origin_single_list[count]
+        #     count = count + 1
+
+
+        last_single_list.append(int(dir))
+        last_list.append(last_single_list)
+        # except Exception as e:
+        # print(str(e))
+        # logger.error("file %s error", input_filepath + dir + "/" + file)
+    logger.info("file %s, len: %s", input_filepath + dir, len(last_list))
+    return dir, last_list
 
 
 def extract_feature():
+    last_dict = {}
     executor = ProcessPoolExecutor(max_workers=30)
     input_filepath = save_ttdl_filepath
     dirs = os.listdir(input_filepath)
     logger.info("dirs: %s", dirs)
-    all_task = [executor.submit(extract_feature_single_dir_simulator, dir) for dir in dirs]
+    all_task = [executor.submit(extract_feature_single_dir_order, dir, 10000) for dir in dirs]
     last_list = []
     for future in as_completed(all_task):
-        single_list = future.result()
-        last_list = last_list + single_list
-    print(len(last_list))
+        dir, single_list = future.result()
+        last_dict[dir] = single_list
     executor.shutdown()
+    for i in range(95):
+        last_list = last_list + last_dict[str(i)]
+    print(len(last_list))
     data = pd.DataFrame(data=last_list)
     data.to_csv(df_filepath, index=False, header=False)
 
