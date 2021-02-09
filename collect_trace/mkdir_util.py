@@ -14,6 +14,6 @@ def mkdir(path):
 
 
 if __name__ == '__main__':
-    path = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/round1/tcp_time_direction_len/"
+    path = "/media/zyan/文档/aa/"
     for i in range(95):
         mkdir(path + str(i))

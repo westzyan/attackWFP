@@ -1,3 +1,7 @@
 *.out
 /.idea
+xgboost_/features
+xgboost_/models
+xgboost_/scores
+
 

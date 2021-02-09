@@ -50,11 +50,22 @@ if __name__ == '__main__':
     # filepath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/next/round1/tcp_time_direction_len/"
     # outpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/next/"
     # # wc_next(filepath, outpath)
-    meanpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/next/round2.txt"
-    mean(meanpath)
+    # meanpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/next/round2.txt"
+    # mean(meanpath)
 
     # for i in range(2, 10):
     #     filepath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/next/round{}/tcp_time_direction_len/".format(i)
     #     outpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/next/"
     #     outname = "round{}.txt".format(i)
     #     wc_next(filepath, outpath, outname)
+
+    # filepath = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/tcp_time_direction_len/"
+    # outpath = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/"
+    # outname = "length.txt"
+    # wc_next(filepath, outpath, outname)
+
+    data = np.loadtxt("/media/zyan/文档/毕业设计/code/attack_dataset/round13/special_location.txt", delimiter=",")
+    # print(data)
+    # print(np.mean(data))
+    print(np.max(data, axis=0))
+    print(np.argmax(data, axis=0))

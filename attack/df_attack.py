@@ -12,6 +12,15 @@ import keras
 import matplotlib as plt
 
 
+def deal_data():
+    new_data = np.random.randint(-10,10, size=(9500, 5000))
+    new_data2 = np.random.random((9500, 5000))
+    new_data = new_data + new_data2
+    return new_data
+
+
+
+
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 keras.backend.tensorflow_backend.set_session(tf.Session(config=config))
@@ -21,11 +30,13 @@ def LoadDataNoDefCW():
     # Point to the directory storing data
     # dataset_dir = '../dataset/ClosedWorld/NoDef/'
     # dataset_dir = "/media/zyan/软件/张岩备份/PPT/DeepFingerprinting/df-master/dataset/ClosedWorld/NoDef/"
-    dataset_dir = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/"
+    dataset_dir = "/media/zyan/文档/毕业设计/code/attack_dataset/round15/"
     # X represents a sequence of traffic directions
     # y represents a sequence of corresponding label (website's label)
-    data = np.loadtxt(dataset_dir + "df_tcp_95000_5000_new.csv", delimiter=",")
+    # data = np.loadtxt(dataset_dir + "df_tcp_9500_5000_new.csv", delimiter=",")
+    data = deal_data()
     print(data)
+
     np.random.shuffle(data)
     print(data)
     print(len(data))
@@ -36,12 +47,19 @@ def LoadDataNoDefCW():
     valid = data[train_length: train_length + valid_length, :]
     test = data[train_length + valid_length:, :]
 
-    X_train = train[:, :-1]
-    y_train = train[:,-1]
-    X_valid = valid[:, :-1]
-    y_valid = valid[:,-1]
-    X_test = test[:, :-1]
-    y_test = test[:,-1]
+    # X_train = train[:, :-1]
+    # y_train = train[:,-1]
+    # X_valid = valid[:, :-1]
+    X_train = train
+    X_valid = valid
+    X_test = test
+    # y_train = train[:,-1]
+    # y_valid = valid[:,-1]
+    # X_test = test[:, :-1]
+    # y_test = test[:,-1]
+    y_valid = np.random.randint(0,95, size=(len(X_valid), 1))
+    y_train = np.random.randint(0, 95, size=(len(X_train), 1))
+    y_test = np.random.randint(0, 95, size=(len(X_test), 1))
 
     print("X: Training data's shape : ", X_train.shape)
     print("y: Training data's shape : ", y_train.shape)
@@ -53,45 +71,6 @@ def LoadDataNoDefCW():
     return X_train, y_train, X_valid, y_valid, X_test, y_test
 
 
-# LoadDataNoDefCW()
-
-#写一个LossHistory类，保存loss和acc
-class LossHistory(keras.callbacks.Callback):
-    def on_train_begin(self, logs={}):
-        self.losses = {'batch':[], 'epoch':[]}
-        self.accuracy = {'batch':[], 'epoch':[]}
-        self.val_loss = {'batch':[], 'epoch':[]}
-        self.val_acc = {'batch':[], 'epoch':[]}
-
-    def on_batch_end(self, batch, logs={}):
-        self.losses['batch'].append(logs.get('loss'))
-        self.accuracy['batch'].append(logs.get('acc'))
-        self.val_loss['batch'].append(logs.get('val_loss'))
-        self.val_acc['batch'].append(logs.get('val_acc'))
-
-    def on_epoch_end(self, batch, logs={}):
-        self.losses['epoch'].append(logs.get('loss'))
-        self.accuracy['epoch'].append(logs.get('acc'))
-        self.val_loss['epoch'].append(logs.get('val_loss'))
-        self.val_acc['epoch'].append(logs.get('val_acc'))
-
-    def loss_plot(self, loss_type):
-        iters = range(len(self.losses[loss_type]))
-        plt.figure()
-        # acc
-        plt.plot(iters, self.accuracy[loss_type], 'r', label='train acc')
-        # loss
-        plt.plot(iters, self.losses[loss_type], 'g', label='train loss')
-        if loss_type == 'epoch':
-            # val_acc
-            plt.plot(iters, self.val_acc[loss_type], 'b', label='val acc')
-            # val_loss
-            plt.plot(iters, self.val_loss[loss_type], 'k', label='val loss')
-        plt.grid(True)
-        plt.xlabel(loss_type)
-        plt.ylabel('acc-loss')
-        plt.legend(loc="upper right")
-        plt.show()
 
 
 if __name__ == '__main__':

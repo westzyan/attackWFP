@@ -1,7 +1,4 @@
-from sklearn.preprocessing import label_binarize
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix, precision_score, accuracy_score,recall_score, f1_score,roc_auc_score, precision_recall_fscore_support, roc_curve, classification_report
-import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, classification_report
 from Model_DF import DFNet
 import random
 from keras.utils import np_utils
@@ -11,20 +8,21 @@ import os
 import tensorflow as tf
 import keras
 
-
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 keras.backend.tensorflow_backend.set_session(tf.Session(config=config))
+
+
 # Load data for non-defended dataset for CW setting
 def LoadDataNoDefCW():
     print("Loading defended dataset for closed-world scenario")
     # Point to the directory storing data
     # dataset_dir = '../dataset/ClosedWorld/NoDef/'
     # dataset_dir = "/media/zyan/软件/张岩备份/PPT/DeepFingerprinting/df-master/dataset/ClosedWorld/NoDef/"
-    dataset_dir = "/media/zyan/文档/毕业设计/code/attack_dataset/round15/"
+    dataset_dir = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/"
     # X represents a sequence of traffic directions
     # y represents a sequence of corresponding label (website's label)
-    data = np.loadtxt(dataset_dir + "df_tcp_9500_5000_new.csv", delimiter=",")
+    data = np.loadtxt(dataset_dir + "df_tcp_95000_5000_new.csv", delimiter=",")
     print(data)
     np.random.shuffle(data)
     print(data)
@@ -37,11 +35,11 @@ def LoadDataNoDefCW():
     test = data[train_length + valid_length:, :]
 
     X_train = train[:, :-1]
-    y_train = train[:,-1]
+    y_train = train[:, -1]
     X_valid = valid[:, :-1]
-    y_valid = valid[:,-1]
+    y_valid = valid[:, -1]
     X_test = test[:, :-1]
-    y_test = test[:,-1]
+    y_test = test[:, -1]
 
     print("X: Training data's shape : ", X_train.shape)
     print("y: Training data's shape : ", y_train.shape)
@@ -55,17 +53,12 @@ def LoadDataNoDefCW():
 
 if __name__ == '__main__':
     random.seed(0)
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-    # Use only CPU
-    # os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
-    # os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-
     description = "Training and evaluating DF model for closed-world scenario on non-defended dataset"
-
     print(description)
     # Training the DF model
-    NB_EPOCH = 1  # Number of training epoch
+    NB_EPOCH = 30  # Number of training epoch
     print("Number of Epoch: ", NB_EPOCH)
     BATCH_SIZE = 128  # Batch size
     VERBOSE = 2  # Output display mode
@@ -121,49 +114,16 @@ if __name__ == '__main__':
     score_test = model.evaluate(X_test, y_test, verbose=VERBOSE)
     print("Testing accuracy:", score_test[1])
 
+    y_pre = model.predict(X_test)
+    index_test = np.argmax(y_test, axis=1)
+    index_pre = np.argmax(y_pre, axis=1)
 
+    print(precision_recall_fscore_support(index_test, index_pre, average='macro'))
+    # Macro-P,Macro-R,Macro-F1
+    print(precision_recall_fscore_support(index_test, index_pre, average='micro'))
+    # Micro-P,Micro-R,Micro-F1
+    print(classification_report(index_test, index_pre))
 
-    y_score = model.predict(X_test)
-    # mean_accuracy = model.score(X_test, y_test)
-    # print("mean_accuracy: ", mean_accuracy)
-    print("predict label:", y_score)
-    print(y_score == y_test)
-    print(y_score.shape)
-    y_score_pro = model.predict_proba(X_test)  # 输出概率
-    print(y_score_pro)
-    print(y_score_pro.shape)
-    # y_score_one_hot = label_binarize(y_score, np.arange(95))  # 这个函数的输入必须是整数的标签哦
-    # print(y_score_one_hot.shape)
-
-    obj1 = confusion_matrix(y_test, y_score)  # 注意输入必须是整数型的，shape=(n_samples, )
-    print('confusion_matrix\n', obj1)
-
-    print('accuracy:{}'.format(accuracy_score(y_test, y_score)))  # 不存在average
-    print('precision:{}'.format(precision_score(y_test, y_score, average='micro')))
-    print('recall:{}'.format(recall_score(y_test, y_score, average='micro')))
-    print('f1-score:{}'.format(f1_score(y_test, y_score, average='micro')))
-    print('f1-score-for-each-class:{}'.format(precision_recall_fscore_support(y_test, y_score)))  # for macro
-    # print('AUC y_pred = one-hot:{}\n'.format(roc_auc_score(y_one_hot, y_score_one_hot,average='micro')))  # 对于multi-class输入必须是proba，所以这种是错误的
-    # y_one_hot = label_binarize(y_test, np.arange(95))
-    # AUC值
-    # auc = roc_auc_score(y_one_hot, y_score_pro, average='micro')  # 使用micro，会计算n_classes个roc曲线，再取平均
-    # print("AUC y_pred = proba:", auc)
-    # # 画ROC曲线
-    # print("one-hot label ravelled shape:", y_one_hot.ravel().shape)
-    # fpr, tpr, thresholds = roc_curve(y_one_hot.ravel(), y_score_pro.ravel())  # ravel()表示平铺开来,因为输入的shape必须是(n_samples,)
-    # print("threshold： ", thresholds)
-    # plt.plot(fpr, tpr, linewidth=2, label='AUC=%.3f' % auc)
-    # plt.plot([0, 1], [0, 1], 'k--')  # 画一条y=x的直线，线条的颜色和类型
-    # plt.axis([0, 1.0, 0, 1.0])  # 限制坐标范围
-    # plt.xlabel('False Postivie Rate')
-    # plt.ylabel('True Positive Rate')
-    # plt.legend()
-    # plt.show()
-    #
-    # # p-r曲线针对的是二分类，这里就不描述了
-    #
-    # ans = classification_report(y_test, y_score, digits=5)  # 小数点后保留5位有效数字
-    # print(ans)
-
-
-
+    # 混淆矩阵并可视化
+    confmat = confusion_matrix(y_true=index_test, y_pred=index_pre)  # 输出混淆矩阵
+    print(confmat)

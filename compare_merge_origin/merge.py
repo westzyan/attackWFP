@@ -158,6 +158,22 @@ def CUMUL(filepath, flag):
     return CUMUL_all_list
 
 
+def CUMUL_AWF(filepath, flag):
+    CUMUL_single_list = []
+    count = 0
+    with open(filepath, "r") as f:
+        print(filepath)
+        for line in f.readlines():
+            line = line.strip('\n')
+            print(line)
+            if flag:
+                count = count + abs(int(line.split('\t')[1]))
+            else:
+                count = count + int(line.split('\t')[1])
+            CUMUL_single_list.append(count)
+    f.close()
+    return CUMUL_single_list
+
 def save_CUMUL(filepath):
     for i in range(100):
         full_dir = filepath + str(i) + "/"
@@ -170,19 +186,40 @@ def plt_CUMUL(data1, data2, str1, str2):
     print(data2)
     # # 设置matplotlib正常显示中文和负号
     # matplotlib.rcParams['font.sans-serif'] = ['SimHei']  # 用黑体显示中文
-    # matplotlib.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+    # matplotlib.rcParams['axes.unicode_minus'] = False  # 正常显示负号 msyh.ttf
     zhfont = matplotlib.font_manager.FontProperties(fname='/usr/share/fonts/myfonts/msyh.ttf')
     # plt.bar(range(len(data)), data,color='yellow')
-    plt.style.use('ggplot')
-    plt.plot(data1, linewidth=2.0, linestyle='--')
+    # plt.style.use('ggplot')
+    plt.plot(data1,  linewidth=2.0, linestyle='--')
     plt.plot(data2, linewidth=2.0, linestyle='-')
     # 显示横轴标签
-    plt.xlabel("个数", fontproperties=zhfont)
+    plt.xlabel("数据包数量", fontproperties=zhfont)
     # 显示纵轴标签
-    plt.ylabel("累积量", fontproperties=zhfont)
+    plt.ylabel("数据包大小累积量", fontproperties=zhfont)
     # 显示图标题
-    plt.title(str1 + " " + str2 + "CUMUL", fontproperties=zhfont)
+    # plt.title(str1 + " " + str2 + "CUMUL", fontproperties=zhfont)
+    # 显示图例
+    plt.legend(['amazon.com trace 1', 'amazon.com trace 2'])  #
+
+    plt.savefig('/media/zyan/文档/毕业设计/code/生成的图片/相同网站累积量非绝对值图/相同网站累积量图2.jpg', dpi=200)
+
     plt.show()
+
+
+def test_CUMUL():
+    filepath = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/tcp_time_direction_len/"
+    # save_CUMUL(filepath=filepath1)
+    label1 = random.randint(0, 95)
+    label2 = random.randint(0, 95)
+    instance1 = random.randint(0, 999)
+    instance2 = random.randint(0, 999)
+    file1 = filepath + str(label1) + "/" + str(instance1)
+    file2 = filepath + str(label2) + "/" + str(instance2)
+    file1 = filepath + str(2) + "/" + str(1)
+    file2 = filepath + str(2) + "/" + str(23)
+    a = CUMUL_AWF(file1, False)
+    b = CUMUL_AWF(file2, False)
+    plt_CUMUL(a[:50], b[:50], "{}-{}".format(label1, instance1), "{}-{}".format(label2, instance2))
 
 
 
@@ -206,23 +243,26 @@ if __name__ == '__main__':
     #
     # # plt_CUMUL(CUMUL_list)
     #
-    # filepath = "/media/zyan/文档/毕业设计/code/attack_dataset/round2/cumul/"
-    # save_CUMUL(filepath=filepath1)
-    # # label1 = random.randint(0, 100)
-    # # label2 = random.randint(0, 100)
-    # # instance1 = random.randint(0, 100)
-    # # instance2 = random.randint(0, 100)
+    # filepath = "/media/zyan/文档/毕业设计/code/attack_dataset/round13/tcp_time_direction_len/"
+    # # save_CUMUL(filepath=filepath1)
+    # label1 = random.randint(0, 100)
+    # label2 = random.randint(0, 100)
+    # instance1 = random.randint(0, 100)
+    # instance2 = random.randint(0, 100)
     # # a = np.load(filepath + "{}.npy".format(label1), allow_pickle=True)[instance1]
     # # b = np.load(filepath + "{}.npy".format(label2), allow_pickle=True)[instance2]
-    # #
-    # # plt_CUMUL(a, b, "{}-{}".format(label1, instance1), "{}-{}".format(label2, instance2))
     #
-    # # print(plt.style.available)
-    file1 = "/media/zyan/文档/毕业设计/code/参考代码/undef_data/0-0"
-    file2 = "/media/zyan/文档/毕业设计/code/参考代码/undef_data/1-1"
-    outpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/random/round1/tcp_time_direction_len/"
-    # merge_single(file1, file2, 0, 1, 2, outpath)
-
-    # merge_AWF_next(2, outpath)
-    merge()
-    # merge_AWF_random(2, outpath)
+    # plt_CUMUL(a, b, "{}-{}".format(label1, instance1), "{}-{}".format(label2, instance2))
+    #
+    # # # print(plt.style.available)
+    # file1 = "/media/zyan/文档/毕业设计/code/参考代码/undef_data/0-0"
+    # file2 = "/media/zyan/文档/毕业设计/code/参考代码/undef_data/1-1"
+    # outpath = "/media/zyan/文档/毕业设计/code/AWF_attack_dataset/random/round1/tcp_time_direction_len/"
+    # # merge_single(file1, file2, 0, 1, 2, outpath)
+    #
+    # # merge_AWF_next(2, outpath)
+    # # merge()
+    # # merge_AWF_random(2, outpath)
+    #
+    # CUMUL()
+    test_CUMUL()
